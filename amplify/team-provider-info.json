@@ -1,0 +1,16 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-rideituserapp-dev-173026-authRole",
+      "UnauthRoleArn": "arn:aws:iam::709407135627:role/amplify-rideituserapp-dev-173026-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::709407135627:role/amplify-rideituserapp-dev-173026-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-rideituserapp-dev-173026-deployment",
+      "UnauthRoleName": "amplify-rideituserapp-dev-173026-unauthRole",
+      "StackName": "amplify-rideituserapp-dev-173026",
+      "StackId": "arn:aws:cloudformation:ap-south-1:709407135627:stack/amplify-rideituserapp-dev-173026/f5a7f220-8031-11ec-be08-026500d30870",
+      "AmplifyAppId": "dxjihfpbvqjf7",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-rideituserapp-dev-173026-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    }
+  }
+}
