@@ -11,6 +11,9 @@ import SplashScreen from "../screens/SplashScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import {Auth, Hub} from "aws-amplify";
 import SearchResult from "../screens/SearchResult/SearchResult";
+import { Text, View } from "react-native";
+import CustomDrawer from "./CustomDrawer";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +53,45 @@ const Navigation = () => {
         return () => Hub.remove('auth', listener);
     },[])
 
+    const Drawer = createDrawerNavigator();
+
+    const DummyScreen = props => (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>{props.name}</Text>
+      </View>
+    );
+
+    const RootNavigator = props => {
+        return (
+
+          <Drawer.Navigator
+            drawerContent={props => <CustomDrawer {...props} />}
+            screenOptions={{
+                headerShown: false,
+            }}
+          >
+              <Drawer.Screen name="Home" component={HomeScreen} />
+
+              <Drawer.Screen name="Your Trips">
+                  {() => <DummyScreen name={'(Coming Soon)'} />}
+              </Drawer.Screen>
+
+              <Drawer.Screen name="Help">
+                  {() => <DummyScreen name={'(Coming Soon)'} />}
+              </Drawer.Screen>
+
+              <Drawer.Screen name="Wallet">
+                  {() => <DummyScreen name={'(Coming Soon)'} />}
+              </Drawer.Screen>
+
+              <Drawer.Screen name="Settings">
+                  {() => <DummyScreen name={'(Coming Soon)'} />}
+              </Drawer.Screen>
+          </Drawer.Navigator>
+
+        );
+    };
+
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -64,7 +106,7 @@ const Navigation = () => {
             {user ? (
                   <>
                     <Stack.Screen name="RideSelect" component={SearchResult} />
-                    <Stack.Screen name="Home" component={HomeScreen} />
+                    <Stack.Screen name="Root" component={RootNavigator} />
                   </>
             ) : (
                 <>

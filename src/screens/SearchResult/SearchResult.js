@@ -28,9 +28,8 @@ const SearchResult = props => {
             const updatedCarData = await API.graphql(
               graphqlOperation(updateCar, { input })
             )
-            console.log(updatedCarData);
-            console.warn(updatedCarData);
-            navigation.dispatch(StackActions.replace('Home'));
+            navigation.dispatch(StackActions.replace('Root'));
+            //navigation.navigate('Root', { screen: 'Profile' });
         } catch (e) {
             console.error(e);
         }

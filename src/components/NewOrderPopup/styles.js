@@ -19,12 +19,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     minutes: {
-        color: 'lightgrey',
+        color: '#4a4a4a',
         fontSize: 36,
     },
     distance: {
         color: 'lightgrey',
         fontSize: 26,
+        marginTop: -30,
     },
     vehicleType: {
         color: 'lightgrey',

@@ -5,6 +5,7 @@ import Foundation from "react-native-vector-icons/Foundation";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const NewOrderPopup  = ({ newOrder, onAccept, onDecline, duration, distance }) => {
 
@@ -27,8 +28,9 @@ const NewOrderPopup  = ({ newOrder, onAccept, onDecline, duration, distance }) =
                 </Text>
             </View>
 
-            <Text style={styles.minutes}>{duration} min</Text>
-            <Text style={styles.distance}>{distance} km</Text>
+            <Text style={styles.minutes}>{duration} order</Text>
+          <Entypo name={"shield"} size={30} color={"white"}/>
+            <Text style={styles.distance}>Safe Ride</Text>
 
         </Pressable>
     </View>

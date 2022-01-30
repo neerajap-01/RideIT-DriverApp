@@ -13,6 +13,7 @@ import config from './aws-exports'
 import Amplify, { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getCarId } from "./src/graphql/queries";
 import { createCar } from "./src/graphql/mutations";
+import 'react-native-gesture-handler';
 
 Amplify.configure(config)
 

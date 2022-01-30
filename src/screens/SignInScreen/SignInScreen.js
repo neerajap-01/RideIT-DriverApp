@@ -1,12 +1,13 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import {View, Text, Image, StyleSheet, useWindowDimensions, ScrollView, TextInput, Alert} from "react-native";
 import Logo from "../../../assets/images/rideit.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import SocialSignInButtons from "../../components/SocialSignInButtons/SocialSignInButtons";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import {Auth} from "aws-amplify";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignInScreen = () => {
     const {control, handleSubmit, formState: {errors}} = useForm();
@@ -39,7 +40,6 @@ const SignInScreen = () => {
 
     const {height} = useWindowDimensions();
     const navigation = useNavigation();
-
     return (
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.root}>
