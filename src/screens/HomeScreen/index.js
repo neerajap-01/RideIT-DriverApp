@@ -12,7 +12,7 @@ import { getCar, listOrders } from "../../graphql/queries";
 import RNRestart from 'react-native-restart';
 import { updateCar , updateOrder} from "../../graphql/mutations";
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyBM2bb5s0UElBjGTcI-yHcPG32xJHliJUA';
+const GOOGLE_MAPS_APIKEY = 'Google_Maps_API_key_Paste_Here';
 
 const HomeScreen  = () => {
   const [car, setCar] = useState(null);
