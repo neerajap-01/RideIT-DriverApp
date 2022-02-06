@@ -1,16 +1,38 @@
-import React, { useState } from "react";
-import { View } from "react-native";
-//import RouteMap from "../../components/RouteMap/routemap";
+import React, { useEffect, useState } from "react";
+import { PermissionsAndroid, Platform, View } from "react-native";
 import RideSelection from "../../components/RideSelection/rideSelection";
-//import { useRoute, useNavigation } from "@react-navigation/native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { updateCar } from "../../graphql/mutations";
+import Geolocation from "@react-native-community/geolocation";
 import { StackActions, useNavigation } from "@react-navigation/native";
-//import { createOrder } from "../../graphql/mutations";
 
 const SearchResult = props => {
     const navigation = useNavigation();
     const typeState = useState(null);
+
+    const androidPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('You can use the location');
+            } else {
+                console.log('Location permission denied');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            androidPermission();
+        } else {
+            // IOS
+            Geolocation.requestAuthorization();
+        }
+    }, []);
 
     const onSubmit = async () => {
         const [type] = typeState;

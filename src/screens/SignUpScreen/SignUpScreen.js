@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, ScrollView, Alert} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert, Linking } from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import SocialSignInButtons from "../../components/SocialSignInButtons/SocialSignInButtons";
@@ -34,12 +34,16 @@ const SignUpScreen = () => {
         navigation.navigate("SignIn");
     }
 
-    const onTermsOfUsePressed = () => {
-        console.warn('Term of Use');
+    const onTermsOfUsePressed = async () => {
+        const url = 'https://rideit.tk/termsandconditions.html';
+        await Linking.openURL(url);
+        //console.warn('Term of Use');
     }
 
-    const onPrivacyPolicyPressed = () => {
-        console.warn('Privacy Policy');
+    const onPrivacyPolicyPressed = async () => {
+        const url = 'https://www.privacypolicies.com/live/70975482-4e18-4610-9e4d-85e0b9902e0a';
+        await Linking.openURL(url);
+        //console.warn('Privacy Policy');
     }
 
     const navigation = useNavigation();

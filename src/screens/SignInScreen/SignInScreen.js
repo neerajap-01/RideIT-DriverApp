@@ -34,6 +34,10 @@ const SignInScreen = () => {
         navigation.navigate("ForgotPassword");
     }
 
+    const onUserNotConfirmedPressed = () => {
+        navigation.navigate("notConfirmed")
+    }
+
     const onSignUpPressed = () => {
         navigation.navigate("SignUp");
     }
@@ -78,11 +82,22 @@ const SignInScreen = () => {
 
                 <CustomButton text={loading ? "Loading..." : "Sign In"} onPress={handleSubmit(onSignInPressed)}/>
 
-                <CustomButton
-                    text="Forgot Password?"
-                    onPress={onForgotPasswordPressed}
-                    type="TERTIARY"
-                />
+                <View style={styles.new}>
+                    <View style={styles.forgotPwd}>
+                        <CustomButton
+                          text="Forgot Password?"
+                          onPress={onForgotPasswordPressed}
+                          type="TERTIARY"
+                        />
+                    </View>
+                    <View style={styles.notConfirmed}>
+                        <CustomButton
+                          text="User not confirmed?"
+                          onPress={onUserNotConfirmedPressed}
+                          type="TERTIARY"
+                        />
+                    </View>
+                </View>
 
                 {/*<SocialSignInButtons />*/}
 
@@ -106,6 +121,16 @@ const styles = StyleSheet.create({
         width: '70%',
         maxWidth: 400,
         maxHeight: 300,
+    },
+    new: {
+        display: "flex",
+        flexDirection: 'row',
+    },
+    forgotPwd: {
+        marginRight: 25,
+    },
+    notConfirmed: {
+        marginLeft: 25,
     },
 });
 

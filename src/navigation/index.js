@@ -14,6 +14,7 @@ import SearchResult from "../screens/SearchResult/SearchResult";
 import { Text, View } from "react-native";
 import CustomDrawer from "./CustomDrawer";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import UsernotConfirmedScreen from "../screens/notConfirmedScreen/UsernotConfirmedScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -117,6 +118,7 @@ const Navigation = () => {
                     <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
                     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
                     <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
+                    <Stack.Screen name="notConfirmed" component={UsernotConfirmedScreen} />
                 </>
             )}
             </Stack.Navigator>
