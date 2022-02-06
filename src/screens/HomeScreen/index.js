@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, Dimensions, Pressable} from 'react-native';
+import { View, Text, Dimensions, Pressable, ToastAndroid } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from "react-native-vector-icons/Entypo";
@@ -109,8 +109,42 @@ const HomeScreen  = () => {
       console.error(e);
     }
   }
+  const shieldBtn = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      "Coming soon",
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    );
+  };
+  const msgBtn = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      "Coming soon",
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    );
+  };
+  const moneyBtn = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      "Coming soon",
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    );
+  };
   const onDirectionFound = (event) => {
-    console.warn("Direction found: ", event);
+    mapRef.current.fitToCoordinates(event.coordinates, {
+          edgePadding: {
+            right: 100,
+            bottom: 100,
+            left: 100,
+            top: 100,
+          },
+    });
     if(order){
       setOrder({
         ... order,
@@ -135,7 +169,6 @@ const HomeScreen  = () => {
   }
   const renderBottomTitle = () => {
     if(order && order.isFinished) {
-      console.log(order);
       return (
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f63103', width: 200, padding: 10,}}>
@@ -146,11 +179,10 @@ const HomeScreen  = () => {
       )
     }
     if(order && order.pickedUp) {
-      console.log(order);
       return (
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {/*<Text>{order.duration ? order.duration.toFixed(1) : '?'} min</Text>*/}
+            <Text>{order.duration ? order.duration.toFixed(1) : '?'} min</Text>
             <View style={{
               backgroundColor: '#d41212',
               marginHorizontal: 10,
@@ -162,22 +194,21 @@ const HomeScreen  = () => {
             }}>
               <FontAwesome name={"user"} color={"white"} size={20}/>
             </View>
-            {/*<Text>{order.distance ? order.distance.toFixed(1) : '?'} km</Text>*/}
+            <Text>{order.distance ? order.distance.toFixed(1) : '?'} km</Text>
           </View>
           <Text style={styles.bottomText}>Picked Up {order?.user?.username}</Text>
         </View>
       )
     }
     if(order) {
-      console.log(order);
       return(
         <View style={{ alignItems: 'center' }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {/*<Text>{order.duration ? order.duration.toFixed(1): '?'} min</Text>*/}
+            <Text>{order.duration ? order.duration.toFixed(1): '?'} min</Text>
             <View style={{ backgroundColor: '#1e9203', marginHorizontal: 10, width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 20}}>
               <FontAwesome name={"user"} color={"white"} size={20} />
             </View>
-            {/*<Text>{order.distance ? order.distance.toFixed(1): '?'} km</Text>*/}
+            <Text>{order.distance ? order.distance.toFixed(1): '?'} km</Text>
           </View>
           <Text style={styles.bottomText}>Picking up {order?.user?.username}</Text>
         </View>
@@ -213,24 +244,14 @@ const HomeScreen  = () => {
             origin={{latitude:car?.latitude,
               longitude:car?.longitude,
             }}
-            onReady={result => {
-              mapRef.current.fitToCoordinates(result.coordinates, {
-                edgePadding: {
-                  right: 100,
-                  bottom: 100,
-                  left: 100,
-                  top: 100,
-                },
-              });
-            }}
-            //onReady={onDirectionFound}
+            onReady={onDirectionFound}
             destination={getDestination()}
             apikey={GOOGLE_MAPS_APIKEY}
           />
         )}
       </MapView>
 
-      <Pressable onPress={() => console.warn('balance')}
+      <Pressable onPress={() => moneyBtn()}
                  style={styles.balanceButton}>
         <View>
           <Text style={styles.balanceText}>
@@ -244,22 +265,22 @@ const HomeScreen  = () => {
         </Text>
       </Pressable>
 
-      <Pressable onPress={() => console.warn('Hey')}
-                 style={[styles.roundButton, {top: 10, left: 10}]}>
-        <Entypo name={"menu"} size={24} color={"#4a4a4a"}/>
-      </Pressable>
+      {/*<Pressable onPress={() => console.warn('Hey')}*/}
+      {/*           style={[styles.roundButton, {top: 10, left: 10}]}>*/}
+      {/*  <Entypo name={"menu"} size={24} color={"#4a4a4a"}/>*/}
+      {/*</Pressable>*/}
 
       {/*<Pressable onPress={() => console.warn('Hey')}*/}
       {/*           style={[styles.roundButton, {top: 10, right: 10}]}>*/}
       {/*  <Ionicons name={"search"} size={24} color={"#4a4a4a"}/>*/}
       {/*</Pressable>*/}
 
-      <Pressable onPress={() => console.warn('Hey')}
+      <Pressable onPress={() => shieldBtn()}
                  style={[styles.roundButton, {bottom: 110, left: 10}]}>
         <Entypo name={"shield"} size={24} color={"#4a4a4a"}/>
       </Pressable>
 
-      <Pressable onPress={() => console.warn('Hey')}
+      <Pressable onPress={() => msgBtn()}
                  style={[styles.roundButton, {bottom: 110, right: 10}]}>
         <Entypo name={"message"} size={24} color={"#4a4a4a"}/>
       </Pressable>

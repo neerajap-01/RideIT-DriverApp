@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {Pressable, Text, View, StyleSheet} from 'react-native';
 import {DrawerContentScrollView, DrawerItemList,} from '@react-navigation/drawer';
-import { Auth } from "aws-amplify";
+import { API, Auth, graphqlOperation } from "aws-amplify";
+import { getUser } from "../graphql/queries";
 
 const CustomDrawer = props => {
+  const [name, setName] = useState(null);
+  const fetchName = async () => {
+    try {
+      const userData = await Auth.currentAuthenticatedUser();
+      const userName = await API.graphql(
+        graphqlOperation(getUser, { id: userData.attributes.sub }),
+      );
+      setName(userName.data.getUser)
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  useEffect(()=>{
+    fetchName();
+  },[])
   return (
     <DrawerContentScrollView {...props}>
       <View style={{backgroundColor: '#212121', padding: 15}}>
@@ -24,7 +40,7 @@ const CustomDrawer = props => {
           />
 
           <View>
-            <Text style={{color: 'white', fontSize: 24}}>Neeraj Pal</Text>
+            <Text style={{color: 'white', fontSize: 24}}>{name?.username}</Text>
             <Text style={{color: 'lightgrey'}}>5.00 *</Text>
           </View>
         </View>

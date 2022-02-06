@@ -9,6 +9,7 @@ import { StackActions, useNavigation } from "@react-navigation/native";
 const SearchResult = props => {
     const navigation = useNavigation();
     const typeState = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const androidPermission = async () => {
         try {
@@ -39,6 +40,10 @@ const SearchResult = props => {
         if (!type) {
             return;
         }
+        if(loading){
+            return;
+        }
+        setLoading(true);
 
         // submit to server
         try {
@@ -60,7 +65,7 @@ const SearchResult = props => {
     return (
         <View style={{ flex: 1 , justifyContent: 'center'}}>
             <View>
-                <RideSelection typeState={typeState} onSubmit={onSubmit}/>
+                <RideSelection typeState={typeState} onSubmit={onSubmit} loading={loading}/>
             </View>
         </View>
     );

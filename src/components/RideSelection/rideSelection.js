@@ -4,7 +4,7 @@ import styles from "./styles";
 import RideSelectionRows from "../RideSelectionRows/rideSelectionRows";
 import typesdata from "../../assets/data/types";
 
-const RideSelection = ({ typeState , onSubmit}) => {
+const RideSelection = ({ typeState , onSubmit, loading}) => {
   const [selectedType, setSelectedType] = typeState;
 
   return (
@@ -22,7 +22,7 @@ const RideSelection = ({ typeState , onSubmit}) => {
         ))}
         <Pressable onPress={onSubmit} style={styles.confirm}>
           <Text style={styles.text}>
-            Confirm Vehicle
+            {loading ? "Please wait..." : "Confirm Vehicle"}
           </Text>
         </Pressable>
       </View>
