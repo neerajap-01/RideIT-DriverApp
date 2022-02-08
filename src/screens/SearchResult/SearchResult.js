@@ -11,30 +11,6 @@ const SearchResult = props => {
     const typeState = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const androidPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('You can use the location');
-            } else {
-                console.log('Location permission denied');
-            }
-        } catch (err) {
-            console.warn(err);
-        }
-    };
-
-    useEffect(() => {
-        if (Platform.OS === 'android') {
-            androidPermission();
-        } else {
-            // IOS
-            Geolocation.requestAuthorization();
-        }
-    }, []);
-
     const onSubmit = async () => {
         const [type] = typeState;
         if (!type) {

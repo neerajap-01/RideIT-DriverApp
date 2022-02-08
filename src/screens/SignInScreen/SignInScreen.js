@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {View, Text, Image, StyleSheet, useWindowDimensions, ScrollView, TextInput, Alert} from "react-native";
+import {
+    View,
+    Text,
+    Image,
+    StyleSheet,
+    useWindowDimensions,
+    ScrollView,
+    TextInput,
+    Alert,
+    PermissionsAndroid, Platform,
+} from "react-native";
 import Logo from "../../../assets/images/rideit.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
@@ -8,10 +18,35 @@ import { StackActions, useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import {Auth} from "aws-amplify";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Geolocation from "@react-native-community/geolocation";
 
 const SignInScreen = () => {
     const {control, handleSubmit, formState: {errors}} = useForm();
     const [loading, setLoading] = useState(false);
+
+    const androidPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('You can use the location');
+            } else {
+                console.log('Location permission denied');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            androidPermission();
+        } else {
+            // IOS
+            Geolocation.requestAuthorization();
+        }
+    }, []);
 
     const onSignInPressed = async (data) => {
         if(loading){

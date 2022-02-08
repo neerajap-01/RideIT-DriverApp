@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import { View, Text, Dimensions, Pressable, ToastAndroid } from "react-native";
+import { View, Text, Dimensions, Pressable, ToastAndroid, Alert } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from "react-native-vector-icons/Entypo";
@@ -11,14 +11,17 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 import { getCar, listOrders } from "../../graphql/queries";
 import RNRestart from 'react-native-restart';
 import { updateCar , updateOrder} from "../../graphql/mutations";
+import { useNavigation } from "@react-navigation/native";
 
 const GOOGLE_MAPS_APIKEY = 'Google_Maps_API_key_Paste_Here';
 
 const HomeScreen  = () => {
   const [car, setCar] = useState(null);
   const [order, setOrder] = useState(null)
+  const [orderID, setOrderID] = useState(null)
   const [newOrders, setNewOrders] = useState([]);
   const [refreshPage, setRefreshPage] = useState("");
+  const navigation = useNavigation();
 
   const fetchCar = async () => {
     try {
@@ -53,21 +56,22 @@ const HomeScreen  = () => {
       RNRestart.Restart();
     }
   }, [car?.isActive]);
-
   const mapRef = useRef();
   const onDecline = () => {
     setNewOrders(newOrders.slice(1));
   }
   const onAccept = async (newOrder) => {
+    setOrderID(newOrder.id);
     try {
       const input = {
         id: newOrder.id,
-        status: "PICKING UP CLIENT",
+        status: "PICKING UP",
         carId: car.id
       }
       const orderData = await API.graphql(
         graphqlOperation(updateOrder, { input })
       )
+      console.warn(orderData.data.updateOrder.user);
       setOrder(orderData.data.updateOrder);
     } catch (e) {
       console.error(e);
@@ -109,15 +113,6 @@ const HomeScreen  = () => {
       console.error(e);
     }
   }
-  const shieldBtn = () => {
-    ToastAndroid.showWithGravityAndOffset(
-      "Coming soon",
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
-  };
   const msgBtn = () => {
     ToastAndroid.showWithGravityAndOffset(
       "Coming soon",
@@ -167,8 +162,61 @@ const HomeScreen  = () => {
       longitude: order.originLongitude,
     }
   }
+  const updateOrderStatus = async () => {
+    if(order && order.isFinished) {
+      try {
+        const input = {
+          id: orderID,
+          status: "DROPPING OFF",
+        }
+        const orderData = await API.graphql(
+          graphqlOperation(updateOrder, { input })
+        )
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+  const updateOrderStatus2 = async () => {
+    if(order && order.pickedUp) {
+      try {
+        const input = {
+          id: orderID,
+          status: "PICKED UP "+order.user.username,
+        }
+        const orderData = await API.graphql(
+          graphqlOperation(updateOrder, { input })
+        )
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+  const updateOrderStatus3 = async () => {
+    if(order) {
+      try {
+        const input = {
+          id: orderID,
+          status: "PICKING UP "+order.user.username,
+        }
+        const orderData = await API.graphql(
+          graphqlOperation(updateOrder, { input })
+        )
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+  const fetchDetails = () => {
+    if(order === null) {
+      Alert.alert("Order Pending...", "First accept any order and Try again later");
+    } else {
+      Alert.alert("Rider details", "ID no.:- "+order.user.id+", "+"Username:- "+order.user.username+".");
+    }
+  };
   const renderBottomTitle = () => {
     if(order && order.isFinished) {
+      updateOrderStatus();
       return (
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f63103', width: 200, padding: 10,}}>
@@ -179,6 +227,7 @@ const HomeScreen  = () => {
       )
     }
     if(order && order.pickedUp) {
+      updateOrderStatus2();
       return (
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -201,6 +250,7 @@ const HomeScreen  = () => {
       )
     }
     if(order) {
+      updateOrderStatus3();
       return(
         <View style={{ alignItems: 'center' }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -265,17 +315,17 @@ const HomeScreen  = () => {
         </Text>
       </Pressable>
 
-      {/*<Pressable onPress={() => console.warn('Hey')}*/}
-      {/*           style={[styles.roundButton, {top: 10, left: 10}]}>*/}
-      {/*  <Entypo name={"menu"} size={24} color={"#4a4a4a"}/>*/}
-      {/*</Pressable>*/}
+      <Pressable onPress={() => navigation.openDrawer()}
+                 style={[styles.roundButton, {top: 10, left: 10}]}>
+        <Entypo name={"menu"} size={24} color={"#4a4a4a"}/>
+      </Pressable>
 
       {/*<Pressable onPress={() => console.warn('Hey')}*/}
       {/*           style={[styles.roundButton, {top: 10, right: 10}]}>*/}
       {/*  <Ionicons name={"search"} size={24} color={"#4a4a4a"}/>*/}
       {/*</Pressable>*/}
 
-      <Pressable onPress={() => shieldBtn()}
+      <Pressable onPress={fetchDetails}
                  style={[styles.roundButton, {bottom: 110, left: 10}]}>
         <Entypo name={"shield"} size={24} color={"#4a4a4a"}/>
       </Pressable>
