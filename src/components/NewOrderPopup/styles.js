@@ -20,12 +20,20 @@ const styles = StyleSheet.create({
     },
     minutes: {
         color: '#4a4a4a',
-        fontSize: 36,
+        fontSize: 20,
+        alignItems: "center",
+        padding: 5,
+    },
+    lines: {
+      color: "white",
+      fontSize: 40,
+      fontWeight: "600",
+      marginTop: -30,
     },
     distance: {
         color: 'lightgrey',
-        fontSize: 26,
-        marginTop: -30,
+        fontSize: 20,
+        marginTop: -40,
     },
     vehicleType: {
         color: 'lightgrey',

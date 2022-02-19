@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import { View, Text, Dimensions, Pressable, ToastAndroid, Alert } from "react-native";
+import { View, Text, Dimensions, Pressable, ToastAndroid, Alert, Linking } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from "react-native-vector-icons/Entypo";
@@ -12,8 +12,10 @@ import { getCar, listOrders } from "../../graphql/queries";
 import RNRestart from 'react-native-restart';
 import { updateCar , updateOrder} from "../../graphql/mutations";
 import { useNavigation } from "@react-navigation/native";
+import Geocoder from 'react-native-geocoding';
 
 const GOOGLE_MAPS_APIKEY = 'Google_Maps_API_key_Paste_Here';
+Geocoder.init("Google_Maps_API_key_Paste_Here");
 
 const HomeScreen  = () => {
   const [car, setCar] = useState(null);
@@ -22,7 +24,6 @@ const HomeScreen  = () => {
   const [newOrders, setNewOrders] = useState([]);
   const [refreshPage, setRefreshPage] = useState("");
   const navigation = useNavigation();
-
   const fetchCar = async () => {
     try {
       const userData = await Auth.currentAuthenticatedUser();
@@ -45,6 +46,37 @@ const HomeScreen  = () => {
       setNewOrders(ordersData.data.listOrders.items);
     } catch (e) {
       console.log(e);
+    }
+  }
+  const fetchPendingOrders = async () => {
+    try {
+      const ordersData = await API.graphql(
+        graphqlOperation(
+          listOrders,
+          { filter: { status: { ne: "NEW" && "DROPPING OFF" } } }
+        )
+      );
+
+      if(ordersData.data.listOrders.items[0] === undefined){
+        Alert.alert("Opps!! error", "Not found any Pending Orders" )
+      }
+      setNewOrders(ordersData.data.listOrders.items);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  const pendingOrders = () => {
+    if (refreshPage === true) {
+      return (
+        <Pressable onPress={fetchPendingOrders}
+                   style={styles.balanceButton}>
+          <View>
+            <Text style={styles.balanceText}>
+              Pending orders?
+            </Text>
+          </View>
+        </Pressable>
+      )
     }
   }
   useEffect(() => {
@@ -71,7 +103,6 @@ const HomeScreen  = () => {
       const orderData = await API.graphql(
         graphqlOperation(updateOrder, { input })
       )
-      console.warn(orderData.data.updateOrder.user);
       setOrder(orderData.data.updateOrder);
     } catch (e) {
       console.error(e);
@@ -113,23 +144,36 @@ const HomeScreen  = () => {
       console.error(e);
     }
   }
-  const msgBtn = () => {
-    ToastAndroid.showWithGravityAndOffset(
-      "Coming soon",
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
-  };
-  const moneyBtn = () => {
-    ToastAndroid.showWithGravityAndOffset(
-      "Coming soon",
-      ToastAndroid.SHORT,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    );
+  const RideIT = async () => {
+    const RideIT = 'https://www.rideit.tk';
+    await Linking.openURL(RideIT);
+  }
+  const Neel = async () => {
+    const Neel = 'https://www.patelneel.me';
+    await Linking.openURL(Neel);
+  }
+  const Neeraj = async () => {
+    const Neeraj = 'https://www.neerajpal.me';
+    await Linking.openURL(Neeraj);
+  }
+  const msgBtn = async () => {
+    // ToastAndroid.showWithGravityAndOffset(
+    //   "Coming soon",
+    //   ToastAndroid.SHORT,
+    //   ToastAndroid.BOTTOM,
+    //   25,
+    //   50
+    // );
+    Alert.alert(
+      "Contact us",
+      "If you want to know or have any query contact us from our RideIT Website ot Portfolio websites.",
+      [
+        {text: 'Ride-IT', onPress: () => RideIT()},
+        {text: 'Neel', onPress: () => Neel()},
+        {text: 'Neeraj', onPress: () => Neeraj()},
+      ],
+      { cancelable: true }
+    )
   };
   const onDirectionFound = (event) => {
     mapRef.current.fitToCoordinates(event.coordinates, {
@@ -207,21 +251,31 @@ const HomeScreen  = () => {
       }
     }
   }
+  const onOrderComplete = () => {
+    Alert.alert(
+      "Hurray!!",
+      "The rider has reached to it's desired destination",
+      [
+        {text: 'OK', onPress: () => RNRestart.Restart()},
+      ],
+      { cancelable: false }
+    )
+  }
   const fetchDetails = () => {
     if(order === null) {
       Alert.alert("Order Pending...", "First accept any order and Try again later");
     } else {
       Alert.alert("Rider details", "ID no.:- "+order.user.id+", "+"Username:- "+order.user.username+".");
     }
-  };
+  }
   const renderBottomTitle = () => {
     if(order && order.isFinished) {
       updateOrderStatus();
       return (
         <View style={{alignItems: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f63103', width: 200, padding: 10,}}>
-            <Text style={{color: 'white', fontWeight:'bold'}}>Complete {order.type}</Text>
-          </View>
+          <Pressable onPress={onOrderComplete} style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f63103', width: 200, padding: 10,}}>
+            <Text style={{color: 'white', fontWeight:'bold'}}>Order Complete</Text>
+          </Pressable>
           <Text style={styles.bottomText}>Dropping off {order.user.username}</Text>
         </View>
       )
@@ -301,24 +355,7 @@ const HomeScreen  = () => {
         )}
       </MapView>
 
-      <Pressable onPress={() => moneyBtn()}
-                 style={styles.balanceButton}>
-        <View>
-          <Text style={styles.balanceText}>
-            Money Saved
-          </Text>
-        </View>
-        <Text style={styles.balanceTextMoney}>
-          <Text style={{color: 'green'}}>₹</Text>
-          {' '}
-          0.00
-        </Text>
-      </Pressable>
-
-      <Pressable onPress={() => navigation.openDrawer()}
-                 style={[styles.roundButton, {top: 10, left: 10}]}>
-        <Entypo name={"menu"} size={24} color={"#4a4a4a"}/>
-      </Pressable>
+      {pendingOrders()}
 
       {/*<Pressable onPress={() => console.warn('Hey')}*/}
       {/*           style={[styles.roundButton, {top: 10, right: 10}]}>*/}
@@ -343,15 +380,17 @@ const HomeScreen  = () => {
       </Pressable>
 
       <View style={styles.bottomContainer}>
-        <Ionicons name={"options"} size={30} color={"#4a4a4a"}/>
+        <Pressable onPress={() => navigation.openDrawer()}>
+          <Entypo name={"list"} size={30} color={"#4a4a4a"}/>
+        </Pressable>
         {renderBottomTitle()}
-        <Entypo name={"list"} size={30} color={"#4a4a4a"}/>
+        <Ionicons name={"options"} size={30} color={"#4a4a4a"}/>
       </View>
 
       {newOrders.length > 0 && !order && <NewOrderPopup
         newOrder={newOrders[0]}
-        duration={"Click to accept"}
-        distance={"Safe"}
+        //duration={address}
+        distance={"Destination"}
 
         onDecline={onDecline}
         onAccept={() => onAccept(newOrders[0])}
