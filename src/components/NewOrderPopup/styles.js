@@ -19,10 +19,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     minutes: {
-        color: '#4a4a4a',
+        color: '#9a9a9a',
         fontSize: 20,
         alignItems: "center",
-        padding: 5,
+        padding: 15,
+        marginTop: -10,
     },
     lines: {
       color: "white",

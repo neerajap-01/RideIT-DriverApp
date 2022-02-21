@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import { View, Text, Dimensions, Pressable, ToastAndroid, Alert, Linking } from "react-native";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -166,7 +166,7 @@ const HomeScreen  = () => {
     // );
     Alert.alert(
       "Contact us",
-      "If you want to know or have any query contact us from our RideIT Website ot Portfolio websites.",
+      "If you want to know or have any query contact us from our RideIT or Portfolio Websites.",
       [
         {text: 'Ride-IT', onPress: () => RideIT()},
         {text: 'Neel', onPress: () => Neel()},
@@ -285,7 +285,7 @@ const HomeScreen  = () => {
       return (
         <View style={{alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text>{order.duration ? order.duration.toFixed(1) : '?'} min</Text>
+            <Text>{order.duration ? order.duration.toFixed(1) : '?'} mins</Text>
             <View style={{
               backgroundColor: '#d41212',
               marginHorizontal: 10,
@@ -342,16 +342,19 @@ const HomeScreen  = () => {
         }}
       >
         {order &&  (
-          <MapViewDirections
-            strokeColor={'#669cf7'}
-            strokeWidth={5}
-            origin={{latitude:car?.latitude,
-              longitude:car?.longitude,
-            }}
-            onReady={onDirectionFound}
-            destination={getDestination()}
-            apikey={GOOGLE_MAPS_APIKEY}
-          />
+          <>
+            <MapViewDirections
+              strokeColor={'#669cf7'}
+              strokeWidth={5}
+              origin={{latitude:car?.latitude,
+                longitude:car?.longitude,
+              }}
+              onReady={onDirectionFound}
+              destination={getDestination()}
+              apikey={GOOGLE_MAPS_APIKEY}
+            />
+            <Marker coordinate={getDestination()} title={"Destination"} />
+          </>
         )}
       </MapView>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -8,21 +8,23 @@ import {
     ScrollView,
     TextInput,
     Alert,
-    PermissionsAndroid, Platform,
+    ToastAndroid, PermissionsAndroid, Platform, TouchableOpacity
 } from "react-native";
 import Logo from "../../../assets/images/rideit.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
-import SocialSignInButtons from "../../components/SocialSignInButtons/SocialSignInButtons";
-import { StackActions, useNavigation } from "@react-navigation/native";
+//import SocialSignInButtons from "../../components/SocialSignInButtons/SocialSignInButtons";
+import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import {Auth} from "aws-amplify";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Geolocation from "@react-native-community/geolocation";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const SignInScreen = () => {
     const {control, handleSubmit, formState: {errors}} = useForm();
     const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [visible, setVisible] = useState(true);
 
     const androidPermission = async () => {
         try {
@@ -62,15 +64,13 @@ const SignInScreen = () => {
         }
         setLoading(false);
 
-        //navigation.navigate('Home');
-    }
-
-    const onForgotPasswordPressed = () => {
-        navigation.navigate("ForgotPassword");
     }
 
     const onUserNotConfirmedPressed = () => {
         navigation.navigate("notConfirmed")
+    }
+    const onForgotPasswordPressed = () => {
+        navigation.navigate("ForgotPassword");
     }
 
     const onSignUpPressed = () => {
@@ -79,71 +79,85 @@ const SignInScreen = () => {
 
     const {height} = useWindowDimensions();
     const navigation = useNavigation();
+
     return (
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.root}>
-                <Image
-                    source={Logo}
-                    style={[styles.logo, {height: height * 0.3}]}
-                    resizeMode="contain"
-                />
+      <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.root}>
+              <Image
+                source={Logo}
+                style={[styles.logo, {height: height * 0.3}]}
+                resizeMode="contain"
+              />
 
-                <CustomInput
-                    name="username"
-                    placeholder="Username"
-                    control={control}
-                    rules={{
-                        required: 'Username is required',
-                        minLength: {
-                            value: 5,
-                            message: 'Username should be minimum 5 characters long',
-                        },
-                        maxLength: {
-                            value: 24,
-                            message: 'Username should be maximum 24 characters long',
-                        },
-                    }}
-                />
+              <CustomInput
+                name="username"
+                placeholder="Username"
+                control={control}
+                rules={{
+                    required: 'Username is required',
+                    minLength: {
+                        value: 5,
+                        message: 'Username should be minimum 5 characters long',
+                    },
+                    maxLength: {
+                        value: 24,
+                        message: 'Username should be maximum 24 characters long',
+                    },
+                }}
+              />
 
-                <CustomInput
-                    name="password"
-                    placeholder="Password"
-                    control={control}
-                    secureTextEntry
-                    rules={{
-                        required: 'Password is required',
-                    }}
-                />
+              <CustomInput
+                name="password"
+                placeholder="Password"
+                control={control}
+                secureTextEntry={visible}
+                rules={{
+                    required: 'Password is required',
+                }}
+              />
+              <TouchableOpacity
+                style={styles.passwordShow}
+                onPress={()=>{
+                    setVisible(!visible);
+                    setShow(!show);
+                }}
+              >
+                  <MaterialCommunityIcons
+                    name={show === false ? 'eye' : 'eye-off'}
+                    size={26}
+                    color={'lightgrey'}
+                  />
+              </TouchableOpacity>
 
-                <CustomButton text={loading ? "Loading..." : "Sign In"} onPress={handleSubmit(onSignInPressed)}/>
+              <CustomButton text={loading ? "Loading..." : "Sign In"} onPress={handleSubmit(onSignInPressed)}/>
 
-                <View style={styles.new}>
-                    <View style={styles.forgotPwd}>
-                        <CustomButton
-                          text="Forgot Password?"
-                          onPress={onForgotPasswordPressed}
-                          type="TERTIARY"
-                        />
-                    </View>
-                    <View style={styles.notConfirmed}>
-                        <CustomButton
-                          text="User not confirmed?"
-                          onPress={onUserNotConfirmedPressed}
-                          type="TERTIARY"
-                        />
-                    </View>
-                </View>
+              <View style={styles.new}>
+                  <View style={styles.forgotPwd}>
+                      <CustomButton
+                        text="Forgot Password?"
+                        onPress={onForgotPasswordPressed}
+                        type="TERTIARY"
+                      />
+                  </View>
+                  <View style={styles.notConfirmed}>
+                      <CustomButton
+                        text="User not confirmed?"
+                        onPress={onUserNotConfirmedPressed}
+                        type="TERTIARY"
+                      />
+                  </View>
+              </View>
 
-                {/*<SocialSignInButtons />*/}
+              {/*<SocialSignInButtons />*/}
 
-                <CustomButton
-                    text="Don't have an account? Create one"
-                    onPress={onSignUpPressed}
-                    type="TERTIARY"
-                />
+              <CustomButton
+                text="Don't have an account? Create one"
+                onPress={onSignUpPressed}
+                type="TERTIARY"
+              />
 
-            </View>
-        </ScrollView>
+          </View>
+      </ScrollView>
     );
 };
 
@@ -167,6 +181,13 @@ const styles = StyleSheet.create({
     notConfirmed: {
         marginLeft: 25,
     },
+    passwordShow: {
+        position: "relative",
+        alignItems: "flex-end",
+        left: 170,
+        marginTop: -45,
+        marginBottom: 25,
+    }
 });
 
 export default SignInScreen

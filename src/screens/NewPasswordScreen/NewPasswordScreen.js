@@ -1,14 +1,17 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, ScrollView, Alert} from "react-native";
+import {View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity} from "react-native";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {useForm} from "react-hook-form";
 import {Auth} from "aws-amplify";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const NewPasswordScreen = () => {
     const route = useRoute();
     const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [visible, setVisible] = useState(true);
     const throwError = "PostConfirmation failed with error Cannot read property 'done' of undefined."
     const {control, handleSubmit} = useForm({ defaultValues: { username: route?.params?.username } });
 
@@ -39,56 +42,69 @@ const NewPasswordScreen = () => {
     const navigation = useNavigation();
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.root}>
-                <Text style={styles.title}>Reset your password</Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.root}>
+              <Text style={styles.title}>Reset your password</Text>
 
-                <CustomInput
-                    name="username"
-                    control={control}
-                    placeholder="Username"
-                    rules={{
-                        required: 'Username is required'
-                    }}
-                />
+              <CustomInput
+                name="username"
+                control={control}
+                placeholder="Username"
+                rules={{
+                    required: 'Username is required'
+                }}
+              />
 
-                <CustomInput
-                    name='code'
-                    control={control}
-                    placeholder="Enter your confirmation code"
-                    rules={{
-                        required: 'Confirmation code is required'
-                    }}
-                />
+              <CustomInput
+                name='code'
+                control={control}
+                placeholder="Enter your confirmation code"
+                rules={{
+                    required: 'Confirmation code is required'
+                }}
+              />
 
-                <CustomInput
-                    name="password"
-                    placeholder="Password"
-                    control={control}
-                    secureTextEntry
-                    rules={{
-                        required: 'Password is required',
-                        minLength: {
-                            value: 6,
-                            message: 'Password should be minimum 6 characters long',
-                        },
-                        pattern: {
-                            value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/,
-                            message: 'Password must contain one of 0-1,A-Z,a-z and special characters'
-                        }
-                    }}
-                />
+              <CustomInput
+                name="password"
+                placeholder="Password"
+                control={control}
+                secureTextEntry={visible}
+                rules={{
+                    required: 'Password is required',
+                    minLength: {
+                        value: 6,
+                        message: 'Password should be minimum 6 characters long',
+                    },
+                    pattern: {
+                        value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/,
+                        message: 'Password must contain one of 0-1,A-Z,a-z and special characters'
+                    }
+                }}
+              />
+              <TouchableOpacity
+                style={styles.passwordShow}
+                onPress={()=>{
+                    setVisible(!visible);
+                    setShow(!show);
+                }}
+              >
+                  <MaterialCommunityIcons
+                    name={show === false ? 'eye' : 'eye-off'}
+                    size={26}
+                    color={'lightgrey'}
+                  />
+              </TouchableOpacity>
 
-                <CustomButton text={loading ? "Loading..." : "Submit"} onPress={handleSubmit(onSubmitPressed)}/>
+              <CustomButton text={loading ? "Loading..." : "Submit"} onPress={handleSubmit(onSubmitPressed)}/>
 
-                <CustomButton
-                    text="Back to Sign In"
-                    onPress={onSignInPressed}
-                    type="TERTIARY"
-                />
+              <CustomButton
+                text="Back to Sign In"
+                onPress={onSignInPressed}
+                type="TERTIARY"
+              />
 
-            </View>
-        </ScrollView>
+          </View>
+      </ScrollView>
     );
 };
 
@@ -113,6 +129,13 @@ const styles = StyleSheet.create({
     link: {
         color: '#FDB075'
     },
+    passwordShow: {
+        position: "relative",
+        alignItems: "flex-end",
+        left: 170,
+        marginTop: -45,
+        marginBottom: 25,
+    }
 });
 
 export default NewPasswordScreen
