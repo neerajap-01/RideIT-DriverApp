@@ -4,7 +4,7 @@
 The aim of this project is to provide such user friendly and interactive service via Application User interface. This system provides a simple and quicker interaction for the users who are in need of transportation help.
 
 
-## Sneak Peak
+## Sneak Peek
 
 ![](https://github.com/neerajap-01/RideIT-Website/blob/master/assets/rideintro.gif)
 
