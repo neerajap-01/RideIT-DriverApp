@@ -6,7 +6,7 @@ The aim of this project is to provide such user friendly and interactive service
 
 ## Sneak Peek
 
-![](https://github.com/neerajap-01/RideIT-Website/blob/master/assets/rideintro.gif)
+![](https://github.com/neerajap-01/RideIT-Website/blob/master/assets/RideIT-Intro.gif)
 
 - 👋 Hi, my name is Neeraj Pal
 - 👀 I’m interested in new Technolgy
