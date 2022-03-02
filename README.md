@@ -41,7 +41,7 @@ Carpooling for Students is not implemented still, but our objective is to help s
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+[RIDE-IT Documentation](https://drive.google.com/file/d/15Y_1PW5P3gpvRj8qBOAmPgOIVC6zMhS3/preview)
 
 
 ## Support
